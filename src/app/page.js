@@ -45,7 +45,6 @@ export default function Home() {
   useEffect(() => {
     if (dataToRender !== null) {
       domToPng(document.querySelector("#builder"), {quality: 1}).then(dataUrl => {
-        console.log(dataUrl);
         imgSrc.current = dataUrl;
         setTimeout(() => {
           document.querySelector("#img").scrollIntoView({behavior: "smooth"});
@@ -337,18 +336,18 @@ export default function Home() {
           <div id="selectors" className="flex flex-col gap-0.5 border-b py-8 border-zinc-500">
             <p className="font-semibold">Tournament details</p>
             <div className="flex flex-col items-start gap-2">
-              <input className="w-full max-w-[800px] text-black p-1" placeholder="Your tournament name" value={data.current.tournament.length > 0 ? data.current.tournament : name} onChange={e => {
+              <input name="t_name" className="w-full max-w-[800px] text-black p-1" placeholder="Your tournament name" value={data.current.tournament.length > 0 ? data.current.tournament : name} onChange={e => {
                 const value = e.target.value;
                 data.current.tournament = value;
                 setName(value);
               }} />
-              <input className="w-full max-w-[500px] text-black p-1" placeholder="Location" value={data.current.info.location.length > 0 ? data.current.info.location : location} onChange={e => {
+              <input name="t_location" className="w-full max-w-[500px] text-black p-1" placeholder="Location" value={data.current.info.location.length > 0 ? data.current.info.location : location} onChange={e => {
                 const value = e.target.value;
                 data.current.info.location = value;
                 setLocation(value);
               }} />
               <div className="flex items-center gap-2">
-                <input className="w-[5ch] text-black p-1" placeholder="#" maxLength={4} value={data.current.info.entrants > 0 ? data.current.info.entrants : entrants} onChange={e => {
+                <input name="t_entrants" className="w-[5ch] text-black p-1" placeholder="#" maxLength={4} value={data.current.info.entrants > 0 ? data.current.info.entrants : entrants} onChange={e => {
                   const value = e.target.value;
                   const number = Number(value)
                   if (!isNaN(number) && number > 0 || value === "") {
@@ -358,7 +357,7 @@ export default function Home() {
                 }} />
                 <p>entrants</p>
               </div>
-              <DatePicker className="text-black p-1" locale="en" placeholderText="Date" dateFormat="dd/MM/yyyy" selected={date} value={data.current.info.date ? data.current.info.date.toLocaleDateString('en-Gb') : date} onChange={(d) => {
+              <DatePicker name="t_date" className="text-black p-1" locale="en" placeholderText="Date" dateFormat="dd/MM/yyyy" selected={date} value={data.current.info.date ? data.current.info.date.toLocaleDateString('en-Gb') : date} onChange={(d) => {
                 data.current.info.date = d;
                 setDate(d);
               }} />
@@ -380,7 +379,7 @@ export default function Home() {
             <div className="flex flex-col gap-1">
               <p>Load from start.gg</p>
               <div className="w-full flex items-center gap-2">
-                <input className="w-full p-1 italic text-black" placeholder="https://start.gg/tournament/.../event/..." type="text" value={urlRef.current.length > 0 ? urlRef.current : url}
+                <input name="t_url" className="w-full p-1 italic text-black" placeholder="https://start.gg/tournament/.../event/..." type="text" value={urlRef.current.length > 0 ? urlRef.current : url}
                 onChange={e => {
                   if (showLoadFromUrlError) {
                     setShowLoadFromUrlError(false);
@@ -462,11 +461,11 @@ export default function Home() {
             <div className="flex flex-col gap-1">
               <p>Upload your logo</p>
               <div className="w-full flex items-center gap-2">
-                <input ref={logoInputRef} style={{display: 'none'}} type="file" onChange={e => handleLogoChange(e)} />
+                <input name="t_logo_ref" ref={logoInputRef} style={{display: 'none'}} type="file" onChange={e => handleLogoChange(e)} />
                 <button className="font-medium rounded-sm bg-gray-500 px-2 py-1 hover:bg-gray-400 active:bg-gray-600" onClick={() => logoInputRef.current.click()}>
                   Browse...
                 </button>
-                <input className="w-full max-w-[800px] p-1 italic text-zinc-400 bg-zinc-700" type="text" disabled value={fileInput.current} />
+                <input name="t_logo" className="w-full max-w-[800px] p-1 italic text-zinc-400 bg-zinc-700" type="text" disabled value={fileInput.current} />
                 {logoFile &&
                 <button className="hover:text-red-500 underline" onClick={() => {
                   fileInput.current = '';

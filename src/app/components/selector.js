@@ -52,7 +52,7 @@ export default function Selector({index, data, modifyData, charData}) {
             <div className="flex gap-2 items-center justify-between">
                 <div className={`${index > 7 ? "w-[4ch]" : "w-1/3"}`}>
                     <p>Prefix</p>
-                    <input className="w-full text-black p-1" placeholder={index > 7 ? "PRE" : "Prefix"} maxLength={index > 7 ? 3 : undefined} value={prefix ? index > 7 ? prefix.substring(0, 3) : prefix : ''} onChange={e => {
+                    <input name="p_prefix" className="w-full text-black p-1" placeholder={index > 7 ? "PRE" : "Prefix"} maxLength={index > 7 ? 3 : undefined} value={prefix ? index > 7 ? prefix.substring(0, 3) : prefix : ''} onChange={e => {
                         const newData = data;
                         const value = e.target.value;
                         newData.player.prefix = value;
@@ -63,7 +63,7 @@ export default function Selector({index, data, modifyData, charData}) {
                 <div className="w-[1px] self-end h-[32px] bg-white" />
                 <div className={`${index > 7 ? "w-[calc(100%-4ch)]" : "w-2/3"}`}>
                     <p>Tag</p>
-                    <input className="w-full text-black p-1" placeholder={"Player " + (index+1)} value={gamerTag} onChange={e => {
+                    <input name="player_tag" className="w-full text-black p-1" placeholder={"Player " + (index+1)} value={gamerTag} onChange={e => {
                         const newData = data;
                         const value = e.target.value;
                         newData.player.gamerTag = value;
