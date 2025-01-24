@@ -45,11 +45,12 @@ export default function Home() {
   useEffect(() => {
     if (dataToRender !== null) {
       domToPng(document.querySelector("#builder"), {quality: 1}).then(dataUrl => {
+        console.log(dataUrl);
         imgSrc.current = dataUrl;
         setTimeout(() => {
           document.querySelector("#img").scrollIntoView({behavior: "smooth"});
+          setDataToRender(null);
         }, 300);
-        setDataToRender(null);
       },);
     }
   }, [dataToRender])
