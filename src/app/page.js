@@ -1,7 +1,7 @@
 'use client'
 import TopSixteen from "./components/top-sixteen";
 import { useEffect, useRef, useState } from "react";
-import { domToPng } from "modern-screenshot";
+import { domToBlob, domToImage, domToPng } from "modern-screenshot";
 import Selector from "./components/selector";
 import char_data from "../../public/resources/characters.json";
 import Image from "next/image";
@@ -26,11 +26,12 @@ export default function Home() {
   const primaryColor = useRef('#c33d3d');
   const secondaryColor = useRef('#63b440');
 
-  const [dataToRender, setDataToRender] = useState(null);
+  const [renderData, setRenderData] = useState(false);
   const [isSixteen, setIsSixteen] = useState(true);
   const [logoFile, setLogoFile] = useState(null);
   const [refreshDataInputs, setRefreshDataInputs] = useState(-1);
   const [date, setDate] = useState(null);
+  const [showWait, setShowWait] = useState(null);
 
   useEffect(() => {
     setRefreshDataInputs(refreshDataInputs + 1);
@@ -43,16 +44,19 @@ export default function Home() {
   }, [refreshDataInputs])
 
   useEffect(() => {
-    if (dataToRender !== null) {
-      domToPng(document.querySelector("#builder"), {quality: 1}).then(dataUrl => {
-        imgSrc.current = dataUrl;
-        setTimeout(() => {
-          document.querySelector("#img").scrollIntoView({behavior: "smooth"});
-          setDataToRender(null);
-        }, 300);
+    if (renderData) {
+      setShowWait(true);
+      domToBlob(document.querySelector("#builder"), {quality: 1}).then(blob => {
+        const urlCreator = window.URL || window.webkitURL;
+        imgSrc.current = urlCreator.createObjectURL(blob);
+        document.querySelector("#img").scrollIntoView({behavior: "smooth"});
+        setRenderData(false);
       },);
     }
-  }, [dataToRender])
+    else {
+      setShowWait(false);
+    }
+  }, [renderData])
 
   function initializeValues() {
     const values = [];
@@ -104,7 +108,6 @@ export default function Home() {
     const [showChangePrimary, setShowChangePrimary] = useState(false);
     const [showChangeSecondary, setShowChangeSecondary] = useState(false);
     const [showLoadFromUrlError, setShowLoadFromUrlError] = useState(false);
-    const [showWait, setShowWait] = useState(null);
 
     async function getCharacter(eventId, entrant) {
       try {
@@ -281,19 +284,6 @@ export default function Home() {
 
     return (
       <>
-        {showWait &&
-          <div className="fixed top-0 left-0 w-screen h-screen bg-[#000c] z-[100] flex justify-center items-center">
-            <div className="flex flex-col items-center gap-3 px-16 py-8 bg-zinc-800 rounded-lg">
-              <svg aria-hidden="true" className="w-8 h-8 text-zinc-500 animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-              </svg>
-              <p className="text-xl font-medium">
-                Please wait...
-              </p>
-            </div>
-          </div>
-        }
         <div className="flex flex-col">
           <div className="w-fit flex flex-col self-end">
             <div className="flex flex-col items-end gap-2">
@@ -544,6 +534,19 @@ export default function Home() {
 
   return (
     <div className="relative w-screen max-w-screen h-screen flex justify-center overflow-x-hidden">
+      {showWait &&
+        <div className="fixed top-0 left-0 w-screen h-screen bg-[#000c] z-[100] flex justify-center items-center">
+          <div className="flex flex-col items-center gap-3 px-16 py-8 bg-zinc-800 rounded-lg">
+            <svg aria-hidden="true" className="w-8 h-8 text-zinc-500 animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <p className="text-xl font-medium">
+              Please wait...
+            </p>
+          </div>
+        </div>
+      }
       <div id="builder" className="absolute w-[1920px] h-[1080px] z-10 top-0 left-0" style={{backgroundColor: background.current}}>
         <div className="relative w-full h-full overflow-hidden">
           <svg className="absolute top-0 left-0 z-20" width="1920px" height="1080px" style={{fill: primaryColor.current}}>
@@ -618,13 +621,13 @@ export default function Home() {
       <main className="w-full min-h-[1080px] flex justify-center p-8 bg-zinc-950 absolute z-50 overflow-y-auto">
         <div className="w-full max-w-[1500px] flex flex-col items-center gap-16">
           <GetInputFields />
-          <button className="w-40 p-3 font-semibold rounded-md bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700" onClick={() => setDataToRender(data.current)}>
+          <button className="w-40 p-3 font-semibold rounded-md bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700" onClick={() => setRenderData(true)}>
             Generate
           </button>
           <div className="flex flex-col gap-4">
             <p className="text-3xl md:text-4xl xl:text-5xl font-bold">{imgSrc.current ? "Your image" :"Sample"}</p>
             <div className="flex flex-col w-full max-w-[1500px]">
-              <img id="img" src={imgSrc.current || "/assets/extra/sample.webp"} />
+              <Image width={1920} height={1080} id="img" src={imgSrc.current || "/assets/extra/sample.webp"} alt="Tournament results"/>
             </div>
           </div>
         </div>
