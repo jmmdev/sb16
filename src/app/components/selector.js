@@ -104,19 +104,33 @@ export default function Selector({index, data, modifyData, charData}) {
                         <div>
                             <div className="flex items-center gap-2">
                                 <p>Second #1</p>
-                                <button className="font-light underline hover:text-red-500" onClick={() => {
-                                    const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: chars}};
-                                    newData.player.chars.splice(1, 1);
-                                    modifyData(index, newData);
-                                    setChars(newData.player.chars);
-                                }}>
-                                    reset
-                                </button>
+                                {chars.length >= 2 &&
+                                    <button className="font-light underline hover:text-red-500" onClick={() => {
+                                        const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: [...chars]}};
+                                        newData.player.chars.splice(1, 1);
+                                        modifyData(index, newData);
+                                        setChars(newData.player.chars);
+                                    }}>
+                                        reset
+                                    </button>
+                                }
                             </div>
                             <CharacterSelector playedIndex={1} />
                         </div>
                         <div>
-                            <p>Second #2</p>
+                            <div className="flex items-center gap-2">
+                                <p>Second #2</p>
+                                {chars.length === 3 &&
+                                    <button className="font-light underline hover:text-red-500" onClick={() => {
+                                            const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: [...chars]}};
+                                            newData.player.chars.splice(2, 1);
+                                            modifyData(index, newData);
+                                            setChars(newData.player.chars);
+                                        }}>
+                                        reset
+                                    </button>
+                                }
+                            </div>
                             <CharacterSelector playedIndex={2} />
                         </div>
                     </>
