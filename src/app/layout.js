@@ -8,7 +8,7 @@ const myFont = Outfit({
 
 export const metadata = {
   title: "SB16",
-  description: "Top 8 & 16 creator for SSBU",
+  description: "Top 8 & 16 creator for Super Smash Bros",
 };
 
 export default function RootLayout({ children }) {
