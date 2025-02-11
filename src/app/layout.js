@@ -8,25 +8,7 @@ const myFont = Outfit({
 
 export const metadata = {
   title: "SB16",
-  description: "Top 8 & 16 creator for Super Smash Bros",
-  icons: {
-    icon: [
-      {
-        media: '(prefers-color-scheme: dark)',
-        url: '/assets/icons/favicon-dark.png',
-        type: 'image/png',
-        sizes: '256x256',
-        href: '/assets/icons/favicon-dark.png'
-      },
-      {
-        media: '(prefers-color-scheme: light)',
-        url: '/assets/icons/favicon-light.png',
-        type: 'image/png',
-        sizes: '256x256',
-        href: '/assets/icons/favicon-light.png'
-      }
-    ]
-  }
+  description: "Top 8 & 16 creator for SSBU",
 };
 
 export default function RootLayout({ children }) {
