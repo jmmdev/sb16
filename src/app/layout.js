@@ -13,17 +13,15 @@ export const metadata = {
     icon: [
       {
         media: '(prefers-color-scheme: dark)',
-        url: '/assets/icons/favicon-dark.png',
         type: 'image/png',
         sizes: '256x256',
-        href: '/assets/icons/favicon-dark.png'
+        href: '../public/assets/icons/favicon-dark.png'
       },
       {
         media: '(prefers-color-scheme: light)',
-        url: '/assets/icons/favicon-light.png',
         type: 'image/png',
         sizes: '256x256',
-        href: '/assets/icons/favicon-light.png'
+        href: '../public/assets/icons/favicon-light.png'
       }
     ]
   }
