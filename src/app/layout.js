@@ -9,6 +9,20 @@ const myFont = Outfit({
 export const metadata = {
   title: "SB16",
   description: "Top 8 & 16 creator for SSBU",
+  icons: {
+    icon: [
+      {
+        media: '(prefers-color-scheme: light)',
+        url: '/icons/favicon.ico',
+        href: 'icons/favicon.ico'
+      },
+      {
+        media: '(prefers-color-scheme: dark)',
+        url: '/icons/favicon.ico',
+        href: 'icons/favicon.ico'
+      }
+    ]
+  }
 };
 
 export default function RootLayout({ children }) {

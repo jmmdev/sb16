@@ -46,7 +46,7 @@ export default function Home() {
   useEffect(() => {
     if (renderData) {
       setShowWait(true);
-      domToBlob(document.querySelector("#builder"), {quality: 1}).then(blob => {
+      domToBlob(document.querySelector("#builder"), {quality: 1}).then(blob  => {
         const urlCreator = window.URL || window.webkitURL;
         imgSrc.current = urlCreator.createObjectURL(blob);
         document.querySelector("#img").scrollIntoView({behavior: "smooth"});
