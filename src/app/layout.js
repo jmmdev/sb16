@@ -15,13 +15,13 @@ export const metadata = {
         media: '(prefers-color-scheme: dark)',
         type: 'image/png',
         sizes: '256x256',
-        href: '../../public/assets/icons/favicon-dark.png'
+        href: '/assets/icons/favicon-dark.png'
       },
       {
         media: '(prefers-color-scheme: light)',
         type: 'image/png',
         sizes: '256x256',
-        href: '../../public/assets/icons/favicon-light.png'
+        href: '/assets/icons/favicon-light.png'
       }
     ]
   }
