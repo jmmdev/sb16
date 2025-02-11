@@ -1,7 +1,7 @@
 'use client'
 import TopSixteen from "./components/top-sixteen";
 import { useEffect, useRef, useState } from "react";
-import { domToBlob, domToImage, domToPng } from "modern-screenshot";
+import { domToBlob } from "modern-screenshot";
 import Selector from "./components/selector";
 import char_data from "../../public/resources/characters.json";
 import Image from "next/image";
@@ -109,7 +109,7 @@ export default function Home() {
     const [showChangeSecondary, setShowChangeSecondary] = useState(false);
     const [showLoadFromUrlError, setShowLoadFromUrlError] = useState(false);
 
-    async function getCharacter(eventId, entrant) {
+    async function getCharacters(eventId, entrant) {
       try {
         const response = await fetch('https://api.start.gg/gql/alpha', {
           method: 'POST',
@@ -148,32 +148,26 @@ export default function Home() {
         });
         const json = await response.json();
         const sets = json.data.event.sets.nodes;
-  
-        const mostUsed = {};
+
+        const mostUsed = [];
         
         for (const s of sets) {
           if (s.games) {
             for (const g of s.games) {
               const selections = g.selections;
               const character = selections[0].entrant.id === entrant ? selections[0].character.name : selections[1].character.name;
-              if (mostUsed[character]) {
-                  mostUsed[character]++;
+              const index = mostUsed.findIndex((obj) => obj.name === character);
+              if (index >= 0) {
+                mostUsed[index].times++;
               }
               else {
-                  mostUsed[character] = 1;
+                mostUsed.push({name: character, times: 1});
               }
             }
           }
         }
-        let max = -1;
-        let final = 'Random';
-        for (const [c, times] of Object.entries(mostUsed)) {
-          if (times > max) {
-            final = c;
-            max = times; 
-          }
-        }
-        return final;
+        mostUsed.sort((a, b) => {return -(a.times - b.times)});
+        return mostUsed.slice(0, 3);
       }
       catch (e) {
         setShowLoadFromUrlError(true);
@@ -233,8 +227,12 @@ export default function Home() {
           return a.placement - b.placement
         })
         for (let s of standings) {
-          const charName = await getCharacter(event.id, s.entrant.id);
-          s.player.char = {index: getCharacterIndex(charName), name: charName};
+          const chars = await getCharacters(event.id, s.entrant.id);
+          const result = [];
+          for (const c of chars) {
+            result.push({index: getCharacterIndex(c.name), name: c.name});
+          }
+          s.player.chars = result;
         }
         data.current.players = standings;
         data.current.info.entrants = event.numEntrants;

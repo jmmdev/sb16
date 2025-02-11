@@ -3,19 +3,22 @@ import { useState } from "react";
 export default function Selector({index, data, modifyData, charData}) {
     const [prefix, setPrefix] = useState(data?.player.prefix || "");
     const [gamerTag, setGamerTag] = useState(data?.player.gamerTag || "");
-    const [char, setChar] = useState(data?.player.char);
-    const [showCharacters, setShowCharacters] = useState(false);
+    const [chars, setChars] = useState(data?.player.chars || [{index: 0, name: "random"}]);
+    const [showCharacters, setShowCharacters] = useState(-1);
 
-    const GetCharacters = () => {    
+    const GetCharacters = ({playedIndex}) => {    
         const output = [];
         for (let [i, c] of charData.entries()) {
             output.push(
                 <button key={c.name.toLowerCase()} className="w-full text-left hover:bg-zinc-300 hover:text-zinc-950 px-2 py-1" onClick={() => {
-                    const newData = data;
-                    newData.player.char = {index: i, name: formatName(c.name)};
+                    const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: chars}};
+                    const element = {index: i, name: formatName(c.name)};
+                    
+                    newData.player.chars.splice(playedIndex, 0, element);
+
                     modifyData(index, newData);
-                    setChar({index: i, name: formatName(c.name)});
-                    setShowCharacters(false);
+                    setChars(newData.player.chars);
+                    setShowCharacters(-1);
                 }}>
                     {c.name}
                 </button>
@@ -23,6 +26,24 @@ export default function Selector({index, data, modifyData, charData}) {
         }
 
         return output;
+    }
+
+    const CharacterSelector = ({playedIndex}) => {
+        return (
+            <div className="relative">
+                <button className="group w-full bg-zinc-700 px-2 py-1 rounded-sm flex justify-between active:bg-zinc-600" onClick={() => setShowCharacters(showCharacters === playedIndex ? -1 : playedIndex)}>
+                    <p className="text-left">{chars && chars[playedIndex] 
+                    ? charData[chars[playedIndex].index].name
+                    : playedIndex === 0 ? charData[0].name : ""}</p>
+                    <p className="group-hover:opacity-60">{showCharacters === playedIndex ? "▲" : "▼"}</p>
+                </button>
+                {showCharacters === playedIndex &&
+                    <div className="absolute w-full left-0 top-[calc(100%+2px)] h-36 overflow-y-scroll bg-zinc-700 z-20">
+                        <GetCharacters playedIndex={playedIndex} />
+                    </div>
+                }
+            </div>
+        )
     }
 
     function formatName(string) {
@@ -72,17 +93,47 @@ export default function Selector({index, data, modifyData, charData}) {
                     }} />
                 </div>
             </div>
-            <div className="flex flex-col">
-                <p>Character</p>
-                <div className="relative">
-                    <button className="group w-full bg-zinc-700 px-2 py-1 rounded-sm flex justify-between active:bg-zinc-600" onClick={() => setShowCharacters(!showCharacters)}>
-                        <p className="text-left">{charData[char.index].name}</p>
-                        <p className="group-hover:opacity-60">{showCharacters ? "▲" : "▼"}</p>
-                    </button>
-                    {showCharacters &&
-                        <div className="absolute w-full left-0 top-[calc(100%+2px)] h-36 overflow-y-scroll bg-zinc-700">
-                            <GetCharacters />
+            <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                    <div>
+                        <p>Main</p>
+                        <CharacterSelector playedIndex={0} />
+                    </div>
+                    {index < 8 &&
+                    <>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <p>Second #1</p>
+                                {chars.length >= 2 &&
+                                    <button className="font-light underline hover:text-red-500" onClick={() => {
+                                        const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: [...chars]}};
+                                        newData.player.chars.splice(1, 1);
+                                        modifyData(index, newData);
+                                        setChars(newData.player.chars);
+                                    }}>
+                                        reset
+                                    </button>
+                                }
+                            </div>
+                            <CharacterSelector playedIndex={1} />
                         </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <p>Second #2</p>
+                                {chars.length === 3 &&
+                                    <button className="font-light underline hover:text-red-500" onClick={() => {
+                                            const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: [...chars]}};
+                                            newData.player.chars.splice(2, 1);
+                                            modifyData(index, newData);
+                                            setChars(newData.player.chars);
+                                        }}>
+                                        reset
+                                    </button>
+                                }
+                            </div>
+                            <CharacterSelector playedIndex={2} />
+                        </div>
+                    </>
                     }
                 </div>
             </div>
