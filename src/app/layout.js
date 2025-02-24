@@ -15,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${myFont.variable} overflow-hidden bg-zinc-950 font-sans antialiased`}
+        className={`${myFont.variable} overflow-hidden text-zinc-300 bg-zinc-950 font-sans antialiased`}
       >
         {children}
       </body>
