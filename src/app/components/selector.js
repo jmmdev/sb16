@@ -11,7 +11,7 @@ export default function Selector({index, data, modifyData, charData}) {
         for (let [i, c] of charData.entries()) {
             output.push(
                 <button key={c.name.toLowerCase()} className="w-full text-left hover:bg-zinc-300 hover:text-zinc-950 px-2 py-1" onClick={() => {
-                    const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: chars}};
+                    const newData = {player: {prefix: prefix, gamerTag: gamerTag, chars: chars}}; 
                     const element = {index: i, name: formatName(c.name)};
                     
                     newData.player.chars.splice(playedIndex, 0, element);
